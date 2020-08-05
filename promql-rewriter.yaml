@@ -1,0 +1,10 @@
+- namemap_rule_config:
+    namemap:
+      foo: bar
+- relabel_rule_config:
+    relabel:
+      - source_labels: [__name__]
+        target_label: baz
+- counter_rule_config:
+    namematcher: bar
+    range: 1m
