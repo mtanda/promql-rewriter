@@ -29,17 +29,20 @@ func convertMatchersToLabels(ms []*labels.Matcher) labels.Labels {
 func mergeToMatcher(ls labels.Labels, ms []*labels.Matcher) []*labels.Matcher {
 	nms := make([]*labels.Matcher, 0)
 	for _, l := range ls {
+		exist := false
 		for _, m := range ms {
 			if m.Name == l.Name {
 				m.Value = l.Value
 				nms = append(nms, m)
-			} else {
-				nms = append(nms, &labels.Matcher{
-					Type:  labels.MatchEqual, // TODO: support regex matcher
-					Name:  l.Name,
-					Value: l.Value,
-				})
+				exist = true
 			}
+		}
+		if !exist {
+			nms = append(nms, &labels.Matcher{
+				Type:  labels.MatchEqual, // TODO: support regex matcher
+				Name:  l.Name,
+				Value: l.Value,
+			})
 		}
 	}
 	return nms
