@@ -54,6 +54,11 @@ func (r *RelabelRule) Replace(expr parser.Expr) parser.Expr {
 		ls := convertMatchersToLabels(n.LabelMatchers)
 		pls := relabel.Process(ls, r.Config.Relabel...)
 		n.LabelMatchers = mergeToMatcher(pls, n.LabelMatchers)
+		for _, m := range n.LabelMatchers {
+			if m.Name == "__name__" {
+				n.Name = m.Value
+			}
+		}
 	}
 	return expr
 }
