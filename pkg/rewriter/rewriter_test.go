@@ -41,6 +41,13 @@ func TestRewriter_RewriteQuery(t *testing.T) {
 					IgnoringLabels: []string{"ig1", "ig2"},
 				},
 			},
+			&rule.NameMapRule{
+				Config: rule.NameMapRuleConfig{
+					NameMap: map[string]string{
+						"label_join_target": "ljt",
+					},
+				},
+			},
 		},
 	}
 	tests := []struct {
@@ -110,16 +117,15 @@ func TestRewriter_RewriteQuery(t *testing.T) {
 			name:    "label join",
 			fields:  f,
 			args:    args{query: "label_join_target{tl1=\"vtl1\",tl2=\"vtl2\",ig1=\"vig1\",ig2=\"vig2\"}"},
-			want:    "label_join_target{ig1=\"vig1\",ig2=\"vig2\"} + ignoring(ig1, ig2) group_right() clamp_max(label_provider{tl1=\"vtl1\",tl2=\"vtl2\"}, 0)",
+			want:    "((ljt{ig1=\"vig1\",ig2=\"vig2\"}) + ignoring(ig1, ig2) group_right() clamp_max(label_provider{tl1=\"vtl1\",tl2=\"vtl2\"}, 0))",
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := &Rewriter{
-				Rules:         tt.fields.Rules,
-				GeneratedExpr: tt.fields.GeneratedExpr,
-				Logger:        &logger,
+				Rules:  tt.fields.Rules,
+				Logger: &logger,
 			}
 			got, err := r.RewriteQuery(tt.args.query)
 			if (err != nil) != tt.wantErr {

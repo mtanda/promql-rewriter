@@ -12,5 +12,6 @@ type RuleConfig struct {
 }
 
 type Rule interface {
-	Replace(expr parser.Expr) parser.Expr
+	Replace(expr parser.Expr) (parser.Expr, bool)
+	IsGenerateExpr() bool
 }

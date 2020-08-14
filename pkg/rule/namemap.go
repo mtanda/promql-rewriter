@@ -12,7 +12,7 @@ type NameMapRule struct {
 	Config NameMapRuleConfig
 }
 
-func (r *NameMapRule) Replace(expr parser.Expr) parser.Expr {
+func (r *NameMapRule) Replace(expr parser.Expr) (parser.Expr, bool) {
 	switch n := expr.(type) {
 	case *parser.VectorSelector:
 		for i, m := range n.LabelMatchers {
@@ -25,5 +25,9 @@ func (r *NameMapRule) Replace(expr parser.Expr) parser.Expr {
 			}
 		}
 	}
-	return expr
+	return expr, false
+}
+
+func (r *NameMapRule) IsGenerateExpr() bool {
+	return false
 }

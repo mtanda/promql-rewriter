@@ -19,7 +19,7 @@ type LabelJoinRule struct {
 	NameMatcherRegex *regexp.Regexp
 }
 
-func (r *LabelJoinRule) Replace(expr parser.Expr) parser.Expr {
+func (r *LabelJoinRule) Replace(expr parser.Expr) (parser.Expr, bool) {
 	if r.NameMatcherRegex == nil {
 		r.NameMatcherRegex = regexp.MustCompile(r.Config.NameMatcher)
 	}
@@ -54,19 +54,25 @@ func (r *LabelJoinRule) Replace(expr parser.Expr) parser.Expr {
 					Func: parser.Functions["clamp_max"],
 					Args: args,
 				}
-				return &parser.BinaryExpr{
-					Op:  parser.ADD,
-					LHS: expr,
-					RHS: fnc,
-					VectorMatching: &parser.VectorMatching{
-						Card:           parser.CardOneToMany,
-						MatchingLabels: r.Config.IgnoringLabels,
-						On:             false,
+				return &parser.ParenExpr{
+					Expr: &parser.BinaryExpr{
+						Op:  parser.ADD,
+						LHS: expr,
+						RHS: fnc,
+						VectorMatching: &parser.VectorMatching{
+							Card:           parser.CardOneToMany,
+							MatchingLabels: r.Config.IgnoringLabels,
+							On:             false,
+						},
+						ReturnBool: false,
 					},
-					ReturnBool: false,
-				}
+				}, true
 			}
 		}
 	}
-	return expr
+	return expr, false
+}
+
+func (r *LabelJoinRule) IsGenerateExpr() bool {
+	return true
 }

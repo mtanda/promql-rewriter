@@ -48,7 +48,7 @@ func mergeToMatcher(ls labels.Labels, ms []*labels.Matcher) []*labels.Matcher {
 	return nms
 }
 
-func (r *RelabelRule) Replace(expr parser.Expr) parser.Expr {
+func (r *RelabelRule) Replace(expr parser.Expr) (parser.Expr, bool) {
 	switch n := expr.(type) {
 	case *parser.VectorSelector:
 		ls := convertMatchersToLabels(n.LabelMatchers)
@@ -60,5 +60,9 @@ func (r *RelabelRule) Replace(expr parser.Expr) parser.Expr {
 			}
 		}
 	}
-	return expr
+	return expr, false
+}
+
+func (r *RelabelRule) IsGenerateExpr() bool {
+	return false
 }

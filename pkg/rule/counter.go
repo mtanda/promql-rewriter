@@ -17,7 +17,7 @@ type CounterRule struct {
 	NameMatcherRegex *regexp.Regexp
 }
 
-func (r *CounterRule) Replace(expr parser.Expr) parser.Expr {
+func (r *CounterRule) Replace(expr parser.Expr) (parser.Expr, bool) {
 	if r.NameMatcherRegex == nil {
 		r.NameMatcherRegex = regexp.MustCompile(r.Config.NameMatcher)
 	}
@@ -38,9 +38,13 @@ func (r *CounterRule) Replace(expr parser.Expr) parser.Expr {
 				return &parser.Call{
 					Func: parser.Functions["rate"],
 					Args: args,
-				}
+				}, true
 			}
 		}
 	}
-	return expr
+	return expr, false
+}
+
+func (r *CounterRule) IsGenerateExpr() bool {
+	return true
 }

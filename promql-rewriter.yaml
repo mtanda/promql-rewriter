@@ -1,6 +1,16 @@
+- labeljoin_rule_config:
+    namematcher: label_join_target
+    label_provider: label_provier
+    target_labels:
+      - tl1
+      - tl2
+    ignoring_labels:
+      - ig1
+      - ig2
 - namemap_rule_config:
     namemap:
       foo: bar
+      label_join_target: replaced_label_join_target
 - relabel_rule_config:
     relabel:
       - source_labels: [__name__]
