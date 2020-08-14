@@ -5,9 +5,10 @@ import (
 )
 
 type RuleConfig struct {
-	CounterConfig *CounterRuleConfig `yaml:"counter_rule_config,omitempty"`
-	NameMapConfig *NameMapRuleConfig `yaml:"namemap_rule_config,omitempty"`
-	RelabelConfig *RelabelRuleConfig `yaml:"relabel_rule_config,omitempty"`
+	CounterConfig   *CounterRuleConfig   `yaml:"counter_rule_config,omitempty"`
+	LabelJoinConfig *LabelJoinRuleConfig `yaml:"labeljoin_rule_config,omitempty"`
+	NameMapConfig   *NameMapRuleConfig   `yaml:"namemap_rule_config,omitempty"`
+	RelabelConfig   *RelabelRuleConfig   `yaml:"relabel_rule_config,omitempty"`
 }
 
 type Rule interface {

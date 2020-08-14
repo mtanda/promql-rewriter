@@ -33,6 +33,14 @@ func TestRewriter_RewriteQuery(t *testing.T) {
 					},
 				},
 			},
+			&rule.LabelJoinRule{
+				Config: rule.LabelJoinRuleConfig{
+					NameMatcher:    "label_join_target",
+					LabelProvider:  "label_provider",
+					TargetLabels:   []string{"tl1", "tl2"},
+					IgnoringLabels: []string{"ig1", "ig2"},
+				},
+			},
 		},
 	}
 	tests := []struct {
@@ -96,6 +104,13 @@ func TestRewriter_RewriteQuery(t *testing.T) {
 			fields:  f,
 			args:    args{query: "avg_over_time(foo[30m:1m])"},
 			want:    "avg_over_time(bar[30m:1m])",
+			wantErr: false,
+		},
+		{
+			name:    "label join",
+			fields:  f,
+			args:    args{query: "label_join_target{tl1=\"vtl1\",tl2=\"vtl2\",ig1=\"vig1\",ig2=\"vig2\"}"},
+			want:    "label_join_target{ig1=\"vig1\",ig2=\"vig2\"} + ignoring(ig1, ig2) group_right() clamp_max(label_provider{tl1=\"vtl1\",tl2=\"vtl2\"}, 0)",
 			wantErr: false,
 		},
 	}

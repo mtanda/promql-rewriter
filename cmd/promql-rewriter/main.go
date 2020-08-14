@@ -33,6 +33,9 @@ func loadRules(ruleConfigs []rule.RuleConfig) []rule.Rule {
 		if cfg.CounterConfig != nil {
 			rules = append(rules, &rule.CounterRule{Config: *cfg.CounterConfig})
 		}
+		if cfg.LabelJoinConfig != nil {
+			rules = append(rules, &rule.LabelJoinRule{Config: *cfg.LabelJoinConfig})
+		}
 		if cfg.NameMapConfig != nil {
 			rules = append(rules, &rule.NameMapRule{Config: *cfg.NameMapConfig})
 		}
