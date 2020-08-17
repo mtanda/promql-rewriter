@@ -41,6 +41,10 @@ func (r *LabelJoinRule) Replace(expr parser.Expr) (parser.Expr, bool) {
 						slm = append(slm, lm)
 					}
 				}
+				tlm = append(tlm, &labels.Matcher{
+					Name:  "__name__",
+					Value: r.Config.LabelProvider,
+				})
 
 				n.LabelMatchers = slm
 				args := []parser.Expr{
